@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Liquibase formatted XML -->
+<!-- Changeset Briskteq:products-->
+<!-- Comment: Add forign key constraint to category_xref_id in products table-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:pro="http://www.liquibase.org/xml/ns/pro" 
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog 
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext 
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+        http://www.liquibase.org/xml/ns/pro 
+        http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
+
+    <changeSet id="products-002" author="Briskteq">
+            <addForeignKeyConstraint 
+                baseTableSchemaName="products"
+                baseTableName="products"
+                baseColumnNames="category_xref_id"
+                referencedTableName="category_xrefs"
+                referencedColumnNames="id"
+                referencedTableSchemaName="products" 
+                constraintName="fk_category_xref"
+                onDelete="CASCADE"/>
+        <rollback>
+            <dropForeignKeyConstraint 
+                baseTableSchemaName="products"
+                baseTableName="products"
+                constraintName="fk_category_xref"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

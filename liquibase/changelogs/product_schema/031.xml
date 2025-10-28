@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Liquibase formatted XML -->
+<!-- Changeset Briskteq:category_xrefs -->
+<!-- Comment: Add subcategories type column in category_xrefs table-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:pro="http://www.liquibase.org/xml/ns/pro" 
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog 
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext 
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+        http://www.liquibase.org/xml/ns/pro 
+        http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">     
+        
+    <changeSet id="category_xrefs-003" author="Briskteq">
+        <addColumn schemaName= "products" tableName="category_xrefs">
+            <column name="subcategories_type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>  
+        <rollback>
+            <dropColumn columnName="subcategories_type"
+                        schemaName="products"
+                        tableName="category_xrefs">
+            </dropColumn>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

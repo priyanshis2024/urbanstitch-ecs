@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Liquibase formatted XML -->
+<!-- Changeset Briskteq:users -->
+<!-- Comment: Add forign key constraint to user_role_id in users table-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:pro="http://www.liquibase.org/xml/ns/pro" 
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog 
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext 
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+        http://www.liquibase.org/xml/ns/pro 
+        http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
+    
+    <changeSet id="users-002" author="Briskteq">            
+            <addForeignKeyConstraint 
+                baseTableSchemaName="users"
+                baseTableName="users"
+                baseColumnNames="user_role_id"
+                referencedTableName="user_roles"
+                referencedTableSchemaName="users" 
+                referencedColumnNames="id"
+                constraintName="fk_user_role"
+                onDelete="CASCADE"/>
+        <rollback>
+            <dropForeignKeyConstraint 
+                    baseTableSchemaName="users"
+                    baseTableName="users"
+                    constraintName="fk_user_role"/> 
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

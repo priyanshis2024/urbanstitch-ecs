@@ -1,0 +1,11 @@
+# Database connection details
+url=jdbc:postgresql://hostname:1234/dbname
+username=username
+password=password
+driver=org.postgresql.Driver
+
+# Path to the changelog file
+changeLogFile=liquibase/changelogs/user_schema/001.xml
+
+# Liquibase settings
+logLevel=info

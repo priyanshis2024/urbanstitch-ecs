@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Liquibase formatted XML -->
+<!-- Changeset Briskteq:categories -->
+<!-- Comment: Add status column in categories table-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:pro="http://www.liquibase.org/xml/ns/pro" 
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog 
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext 
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+        http://www.liquibase.org/xml/ns/pro 
+        http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">     
+        
+    <changeSet id="categories-002" author="Briskteq">
+        <addColumn schemaName= "products" tableName="categories">
+            <column name="status" type="INTEGER" defaultValue="1">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>  
+        <rollback>
+            <dropColumn columnName="status"
+                        schemaName="products"
+                        tableName="categories">
+            </dropColumn>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

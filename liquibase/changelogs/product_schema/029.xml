@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Liquibase formatted XML -->
+<!-- Changeset Briskteq: products -->
+<!-- Comment: Changes in the products table-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:pro="http://www.liquibase.org/xml/ns/pro" 
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog 
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext 
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+        http://www.liquibase.org/xml/ns/pro 
+        http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">    
+    
+    <changeSet id="products-005" author="Briskteq">
+        <renameColumn  
+                columnDataType="VARCHAR(255)"
+                newColumnName="thumbnail_image"
+                oldColumnName="thumbnail_images"
+                schemaName="products"
+                tableName="products"/>
+        <dropNotNullConstraint  
+                columnDataType="VARCHAR(255)"
+                columnName="fabric"
+                schemaName="products"
+                tableName="products"/>
+        <dropNotNullConstraint  
+                columnDataType="VARCHAR(255)"
+                columnName="description"
+                schemaName="products"
+                tableName="products"/>
+        <rollback>
+            <renameColumn  
+                columnDataType="VARCHAR(255)"
+                newColumnName="thumbnail_images"
+                oldColumnName="thumbnail_image"
+                schemaName="products"
+                tableName="products"/>
+            <addNotNullConstraint 
+                columnDataType="VARCHAR(255)"
+                columnName="fabric"
+                defaultNullValue="true"
+                schemaName="products"
+                tableName="products"/>
+            <addNotNullConstraint 
+                columnDataType="VARCHAR(255)"
+                columnName="description"
+                defaultNullValue="false"
+                schemaName="products"
+                tableName="products"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

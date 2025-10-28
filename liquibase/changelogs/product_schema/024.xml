@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Liquibase formatted XML -->
+<!-- Changeset Briskteq:product -->
+<!-- Comment: Add fabric column in products table-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:pro="http://www.liquibase.org/xml/ns/pro" 
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog 
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext 
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+        http://www.liquibase.org/xml/ns/pro 
+        http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">     
+        
+    <changeSet id="products-003" author="Briskteq">
+        <dropColumn columnName="long_description"
+                            schemaName="products"
+                            tableName="products">
+        </dropColumn>
+        <addColumn schemaName= "products" tableName="products">
+            <column name="data" type="JSON">
+                <constraints nullable="false"/>
+            </column>
+            <column name="fabric" type="VARCHAR(255)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>           
+        <rollback>
+            <dropColumn columnName="fabric"
+                        schemaName="products"
+                        tableName="products">
+            </dropColumn>
+            <dropColumn columnName="data"
+                        schemaName="products"
+                        tableName="products">
+            </dropColumn>
+            <addColumn schemaName= "products" tableName="products">
+                <column name="long_description" type="VARCHAR(1024)">
+                    <constraints nullable="false" />
+                </column>
+            </addColumn> 
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

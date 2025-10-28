@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Liquibase formatted XML -->
+<!-- Changeset Briskteq:subproducts -->
+<!-- Comment: Add forign key constraint to product_id and size_id in subproducts table-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:pro="http://www.liquibase.org/xml/ns/pro" 
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog 
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext 
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+        http://www.liquibase.org/xml/ns/pro 
+        http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
+
+    <changeSet id="subproducts-002" author="Briskteq">
+            <addForeignKeyConstraint 
+                baseTableSchemaName="products"
+                baseTableName="subproducts"
+                baseColumnNames="product_id"
+                referencedTableName="products"
+                referencedColumnNames="id"
+                referencedTableSchemaName="products" 
+                constraintName="fk_product"
+                onDelete="CASCADE"/>
+            <addForeignKeyConstraint 
+                baseTableSchemaName="products"
+                baseTableName="subproducts"
+                baseColumnNames="size_id"
+                referencedTableName="sizes"
+                referencedColumnNames="id"
+                referencedTableSchemaName="products" 
+                constraintName="fk_size"
+                onDelete="CASCADE"/>
+        <rollback>
+            <dropForeignKeyConstraint 
+                baseTableSchemaName="products"
+                baseTableName="subproducts"
+                constraintName="fk_product"/>
+            <dropForeignKeyConstraint 
+                baseTableSchemaName="products"
+                baseTableName="sizes"
+                constraintName="fk_size"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

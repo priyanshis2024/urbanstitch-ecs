@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Liquibase formatted XML -->
+<!-- Changeset Briskteq:addresses -->
+<!-- Comment: Rename the address table and add necessary columns into customer table-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:pro="http://www.liquibase.org/xml/ns/pro" 
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog 
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext 
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+        http://www.liquibase.org/xml/ns/pro 
+        http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
+
+    <changeSet id="addresses-003" author="Briskteq">
+            <renameTable
+                newTableName="customer_details"
+                oldTableName="addresses"
+                schemaName="users"/>
+        <addColumn schemaName= "users" tableName="customer_details">
+            <column name="email" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="first_name" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_name" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="contact" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>  
+        <renameColumn  
+            columnDataType="VARCHAR(100)"
+            newColumnName="landmark"
+            oldColumnName="town"
+            schemaName="users"
+            tableName="customer_details"/>
+        <rollback>
+            <dropColumn columnName="email"
+                        schemaName="users"
+                        tableName="customer_details">
+            </dropColumn>
+            <dropColumn columnName="first_name"
+                        schemaName="users"
+                        tableName="customer_details">
+            </dropColumn>
+            <dropColumn columnName="last_name"
+                        schemaName="users"
+                        tableName="customer_details">
+            </dropColumn>
+            <dropColumn columnName="contact"
+                        schemaName="users"
+                        tableName="customer_details">
+            </dropColumn>
+            <renameColumn  
+            columnDataType="VARCHAR(100)"
+            newColumnName="town"
+            oldColumnName="landmark"
+            schemaName="users"
+            tableName="customer_details"/>
+            <renameTable
+                newTableName="addresses"
+                oldTableName="customer_details"
+                schemaName="users"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Liquibase formatted XML -->
+<!-- Changeset Briskteq:payments -->
+<!-- Comment: Rename payments table amount column datatype -->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:pro="http://www.liquibase.org/xml/ns/pro" 
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog 
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext 
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+        http://www.liquibase.org/xml/ns/pro 
+        http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
+
+    <changeSet id="payments-004" author="Briskteq">
+        <modifyDataType  
+            columnName="amount"
+            newDataType="FLOAT"
+            schemaName="products"
+            tableName="payments"/>
+        <rollback>
+            <modifyDataType  
+            columnName="amount"
+            newDataType="INTEGER"
+            schemaName="products"
+            tableName="payments"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

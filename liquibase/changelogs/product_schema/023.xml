@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Liquibase formatted XML -->
+<!-- Changeset Briskteq:wishlist -->
+<!-- Comment: Add subproduct id column in wishlist table-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:pro="http://www.liquibase.org/xml/ns/pro" 
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog 
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext 
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+        http://www.liquibase.org/xml/ns/pro 
+        http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">     
+        
+    <changeSet id="wishlists-003" author="Briskteq">
+        <dropForeignKeyConstraint  
+                baseTableName="wishlists"
+                baseTableSchemaName="products"
+                constraintName="fk_product"/>
+        <dropColumn columnName="product_id"
+                    schemaName="products"
+                    tableName="wishlists">
+        </dropColumn>
+        <addColumn schemaName= "products" tableName="wishlists">
+            <column name="subproduct_id" type="UUID">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+        <addForeignKeyConstraint 
+                baseTableSchemaName="products"
+                baseTableName="wishlists"
+                baseColumnNames="subproduct_id"
+                referencedTableName="subproducts"
+                referencedColumnNames="id"
+                referencedTableSchemaName="products" 
+                constraintName="fk_subproduct"
+                onDelete="CASCADE"/>            
+        <rollback>
+            <dropForeignKeyConstraint 
+                    baseTableSchemaName="products"
+                    baseTableName="wishlists"
+                    constraintName="fk_subproduct"/>
+            <dropColumn columnName="subproduct_id"
+                        schemaName="products"
+                        tableName="wishlists">
+            </dropColumn>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

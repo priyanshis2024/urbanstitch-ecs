@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Liquibase formatted XML -->
+<!-- Changeset Briskteq:order_histories -->
+<!-- Comment: Add forign key constraint to subproduct_id and order_id in order_histories table-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:pro="http://www.liquibase.org/xml/ns/pro" 
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog 
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext 
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+        http://www.liquibase.org/xml/ns/pro 
+        http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
+
+    <changeSet id="order_histories-002" author="Briskteq">
+            <addForeignKeyConstraint 
+                baseTableSchemaName="products"
+                baseTableName="order_histories"
+                baseColumnNames="subproduct_id"
+                referencedTableName="subproducts"
+                referencedColumnNames="id"
+                referencedTableSchemaName="products" 
+                constraintName="fk_subproduct"
+                onDelete="CASCADE"/>
+            <addForeignKeyConstraint 
+                baseTableSchemaName="products"
+                baseTableName="order_histories"
+                baseColumnNames="order_id"
+                referencedTableName="orders"
+                referencedColumnNames="id"
+                referencedTableSchemaName="products" 
+                constraintName="fk_order"
+                onDelete="CASCADE"/>
+        <rollback>
+            <dropForeignKeyConstraint 
+                baseTableSchemaName="products"
+                baseTableName="order_histories"
+                constraintName="fk_subproduct"/>
+            <dropForeignKeyConstraint 
+                baseTableSchemaName="products"
+                baseTableName="order_histories"
+                constraintName="fk_order"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

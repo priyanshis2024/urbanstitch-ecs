@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Liquibase formatted XML -->
+<!-- Changeset Briskteq:category_xrefs -->
+<!-- Comment: Add forign key constraint to category_id and subcategory_id in category_xrefs table-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:pro="http://www.liquibase.org/xml/ns/pro" 
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog 
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext 
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+        http://www.liquibase.org/xml/ns/pro 
+        http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
+
+    <changeSet id="category_xrefs-002" author="Briskteq">
+            <addForeignKeyConstraint 
+                baseTableSchemaName="products"
+                baseTableName="category_xrefs"
+                baseColumnNames="category_id"
+                referencedTableName="categories"
+                referencedColumnNames="id"
+                referencedTableSchemaName="products" 
+                constraintName="fk_category"
+                onDelete="CASCADE"/>
+                
+            <addForeignKeyConstraint 
+                baseTableSchemaName="products"
+                baseTableName="category_xrefs"
+                baseColumnNames="subcategory_id"
+                referencedTableName="subcategories"
+                referencedColumnNames="id"
+                referencedTableSchemaName="products" 
+                constraintName="fk_subcategory"
+                onDelete="CASCADE"/>
+
+        <rollback>
+            <dropForeignKeyConstraint 
+                baseTableSchemaName="products"
+                baseTableName="category_xrefs"
+                constraintName="fk_category"/>
+
+            <dropForeignKeyConstraint 
+                baseTableSchemaName="products"
+                baseTableName="category_xrefs"
+                constraintName="fk_subcategory"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

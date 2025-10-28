@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Liquibase formatted XML -->
+<!-- Changeset Briskteq:products -->
+<!-- Comment: Create products table -->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:pro="http://www.liquibase.org/xml/ns/pro" 
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog 
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext 
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+        http://www.liquibase.org/xml/ns/pro 
+        http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
+
+    <changeSet id="products-001" author="Briskteq">
+        <createTable tableName="products" schemaName="products">
+            <column name="id" type="UUID" defaultValueComputed="gen_random_uuid ()">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="category_xref_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="brand_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="long_description" type="VARCHAR(1024)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="price" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rating" type="REAL">
+                <constraints nullable="true"/>
+            </column>
+            <column name="total_quantity" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_active" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>        
+            <column name="thumbnail_images" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>    
+            <column name="created_by" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>        
+            <column name="updated_by" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>        
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <rollback>
+            <dropTable tableName="products" schemaName="products"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

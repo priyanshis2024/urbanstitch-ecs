@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Liquibase formatted XML -->
+<!-- Changeset Briskteq:products -->
+<!-- Comment: Rename column to is_active to status in products table-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:pro="http://www.liquibase.org/xml/ns/pro" 
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog 
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext 
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+        http://www.liquibase.org/xml/ns/pro 
+        http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
+
+    <changeSet id="products-004" author="Briskteq">
+            <renameColumn  
+                columnDataType="INTEGER"
+                newColumnName="status"
+                oldColumnName="is_active"
+                schemaName="products"
+                tableName="products"/>
+            <addDefaultValue  
+                columnDataType="INTEGER"
+                columnName="status"
+                defaultValue="1"
+                schemaName="products"
+                tableName="products"/>
+        <rollback>
+            <dropDefaultValue  
+                columnDataType="INTEGER"
+                columnName="status"
+                schemaName="products"
+                tableName="products"/>
+            <renameColumn  
+                columnDataType="BOOLEAN"
+                newColumnName="is_active"
+                oldColumnName="status"
+                schemaName="products"
+                tableName="products"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>
