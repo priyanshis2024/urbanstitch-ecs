@@ -2,7 +2,7 @@ version: 2.1
 
 orbs:
   aws-cli: circleci/aws-cli@1.3.2
-  aws-ecs: circleci/aws-ecs@3.2.0 
+  aws-ecs: circleci/aws-ecs@3.2.0
 
 jobs:
   build-and-push-image:
@@ -22,20 +22,15 @@ jobs:
         default: AWS_ECR_ACCOUNT_URL
         type: env_var_name
       repo:
-        description: Name of the Amazon ECR repository
         type: string
       env:
-        description: Environment name (dev/staging/prod)
         type: string
       path:
         default: .
-        description: Path to the directory containing your Dockerfile
         type: string
       dockerfile:
         default: Dockerfile
-        description: Dockerfile name
         type: string
-
     steps:
       - checkout
       - aws-cli/setup:
@@ -44,25 +39,24 @@ jobs:
           aws-secret-access-key: <<parameters.aws-secret-access-key>>
       - setup_remote_docker
       - run:
-          name: Build and Push Docker Image to ECR
+          name: Build and Push Docker Image
           command: |
             TAG=$(date +%Y%m%d%H%M%S)-<<parameters.env>>
             echo "🔹 Building Docker image with tag: $TAG"
+            echo "export IMAGE_TAG=$TAG" >> $BASH_ENV
 
-            aws ecr get-login-password --region $<<parameters.region>> \
-              | docker login --username AWS --password-stdin $<<parameters.account-url>>
-
+            aws ecr get-login-password --region $<<parameters.region>> | docker login --username AWS --password-stdin $<<parameters.account-url>>
             docker build -f <<parameters.dockerfile>> -t <<parameters.repo>> <<parameters.path>>
             docker tag <<parameters.repo>>:latest $<<parameters.account-url>>/<<parameters.repo>>:$TAG
             docker push $<<parameters.account-url>>/<<parameters.repo>>:$TAG
 
-            echo "export IMAGE_TAG=$TAG" >> $BASH_ENV
             echo "✅ Successfully pushed: $<<parameters.account-url>>/<<parameters.repo>>:$TAG"
 
   deploy-to-ecs:
-    executor: aws-ecs/default
+    docker:
+      - image: cimg/python:3.12
     parameters:
-      cluster-name:
+      cluster:
         type: string
       service-name:
         type: string
@@ -76,9 +70,9 @@ jobs:
           aws-region: AWS_DEFAULT_REGION
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
       - aws-ecs/update-service:
-          family: <<parameters.service-name>>
-          cluster-name: <<parameters.cluster-name>>
-          container-image-name-updates: <<parameters.container-name>>=$AWS_ECR_ACCOUNT_URL/<<parameters.repo>>:$IMAGE_TAG
+          cluster: <<parameters.cluster>>
+          service-name: <<parameters.service-name>>
+          container-image-name-updates: "container=<<parameters.container-name>>,image-and-tag=$AWS_ECR_ACCOUNT_URL/<<parameters.repo>>:$IMAGE_TAG"
 
 workflows:
   version: 2
@@ -92,10 +86,9 @@ workflows:
           filters:
             branches:
               only: dev
-
       - deploy-to-ecs:
           name: deploy-dev
-          cluster-name: urbanstitch-cluster-dev
+          cluster: urbanstitch-cluster-dev
           service-name: urbanstitch-service-dev
           container-name: urbanstitch-container
           repo: urbanstitch-ecs
@@ -106,53 +99,6 @@ workflows:
             branches:
               only: dev
 
-      - build-and-push-image:
-          name: build-and-push-staging
-          repo: urbanstitch-ecs
-          env: staging
-          context: urbanstitch-context
-          filters:
-            branches:
-              only: staging
-
-      - deploy-to-ecs:
-          name: deploy-staging
-          cluster-name: urbanstitch-cluster-staging
-          service-name: urbanstitch-service-staging
-          container-name: urbanstitch-container
-          repo: urbanstitch-ecs
-          context: urbanstitch-context
-          requires:
-            - build-and-push-staging
-          filters:
-            branches:
-              only: staging
-
-      - build-and-push-image:
-          name: build-and-push-prod
-          repo: urbanstitch-ecs
-          env: prod
-          context: urbanstitch-context
-          filters:
-            branches:
-              only:
-                - main
-                - prod
-
-      - deploy-to-ecs:
-          name: deploy-prod
-          cluster-name: urbanstitch-cluster-prod
-          service-name: urbanstitch-service-prod
-          container-name: urbanstitch-container
-          repo: urbanstitch-ecs
-          context: urbanstitch-context
-          requires:
-            - build-and-push-prod
-          filters:
-            branches:
-              only:
-                - main
-                - prod
 
 # version: 2.1
 
