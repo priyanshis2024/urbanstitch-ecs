@@ -2,7 +2,7 @@ version: 2.1
 
 orbs:
   aws-cli: circleci/aws-cli@1.3.2
-  aws-ecs: circleci/aws-ecs@3.2.0
+  aws-ecs: circleci/aws-ecs@1.4.0
 
 jobs:
   build-and-push-image:
@@ -22,15 +22,20 @@ jobs:
         default: AWS_ECR_ACCOUNT_URL
         type: env_var_name
       repo:
+        description: Name of the Amazon ECR repository
         type: string
       env:
-        type: string
-      path:
-        default: .
+        description: Environment name (dev/staging/prod)
         type: string
       dockerfile:
         default: Dockerfile
+        description: Dockerfile name
         type: string
+      path:
+        default: .
+        description: Path to Docker build context
+        type: string
+
     steps:
       - checkout
       - aws-cli/setup:
@@ -39,45 +44,68 @@ jobs:
           aws-secret-access-key: <<parameters.aws-secret-access-key>>
       - setup_remote_docker
       - run:
-          name: Build and Push Docker Image
+          name: Build and Push Docker Image to ECR
           command: |
             TAG=$(date +%Y%m%d%H%M%S)-<<parameters.env>>
             echo "🔹 Building Docker image with tag: $TAG"
             echo "export IMAGE_TAG=$TAG" >> $BASH_ENV
 
-            aws ecr get-login-password --region $<<parameters.region>> | docker login --username AWS --password-stdin $<<parameters.account-url>>
+            aws ecr get-login-password --region $<<parameters.region>> \
+              | docker login --username AWS --password-stdin $<<parameters.account-url>>
+
             docker build -f <<parameters.dockerfile>> -t <<parameters.repo>> <<parameters.path>>
             docker tag <<parameters.repo>>:latest $<<parameters.account-url>>/<<parameters.repo>>:$TAG
             docker push $<<parameters.account-url>>/<<parameters.repo>>:$TAG
 
             echo "✅ Successfully pushed: $<<parameters.account-url>>/<<parameters.repo>>:$TAG"
 
-  deploy-to-ecs:
+  deploy-service-update:
     docker:
       - image: cimg/python:3.12
     parameters:
-      cluster:
+      aws-access-key-id:
+        default: AWS_ACCESS_KEY_ID
+        type: env_var_name
+      aws-secret-access-key:
+        default: AWS_SECRET_ACCESS_KEY
+        type: env_var_name
+      region:
+        default: AWS_DEFAULT_REGION
+        type: env_var_name
+      cluster-name:
+        description: ECS cluster name
         type: string
       service-name:
+        description: ECS service name
         type: string
       container-name:
+        description: Container name inside ECS task definition
         type: string
       repo:
+        description: Name of ECR repository
         type: string
+
     steps:
       - aws-cli/setup:
-          aws-access-key-id: AWS_ACCESS_KEY_ID
-          aws-region: AWS_DEFAULT_REGION
-          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-      - aws-ecs/update-service:
-          cluster: <<parameters.cluster>>
-          service-name: <<parameters.service-name>>
-          container-image-name-updates: "container=<<parameters.container-name>>,image-and-tag=$AWS_ECR_ACCOUNT_URL/<<parameters.repo>>:$IMAGE_TAG"
+          aws-access-key-id: <<parameters.aws-access-key-id>>
+          aws-region: <<parameters.region>>
+          aws-secret-access-key: <<parameters.aws-secret-access-key>>
+      - run:
+          name: Update ECS Service with New Image
+          command: |
+            echo "🔹 Deploying IMAGE_TAG: $IMAGE_TAG"
+            aws ecs update-service \
+              --cluster <<parameters.cluster-name>> \
+              --service <<parameters.service-name>> \
+              --force-new-deployment \
+              --region $AWS_DEFAULT_REGION
+            echo "✅ ECS service <<parameters.service-name>> updated successfully."
 
 workflows:
   version: 2
   build-push-deploy:
     jobs:
+      # --- DEV ---
       - build-and-push-image:
           name: build-and-push-dev
           repo: urbanstitch-ecs
@@ -86,18 +114,71 @@ workflows:
           filters:
             branches:
               only: dev
-      - deploy-to-ecs:
+
+      - deploy-service-update:
           name: deploy-dev
-          cluster: urbanstitch-cluster-dev
-          service-name: urbanstitch-service-dev
+          requires:
+            - build-and-push-dev
+          cluster-name: urbanstitch-cluster
+          service-name: urbanstitch-task-service-tdssialu
           container-name: urbanstitch-container
           repo: urbanstitch-ecs
           context: urbanstitch-context
-          requires:
-            - build-and-push-dev
           filters:
             branches:
               only: dev
+
+      # --- STAGING ---
+      - build-and-push-image:
+          name: build-and-push-staging
+          repo: urbanstitch-ecs
+          env: staging
+          context: urbanstitch-context
+          filters:
+            branches:
+              only: staging
+
+      - deploy-service-update:
+          name: deploy-staging
+          requires:
+            - build-and-push-staging
+          cluster-name: urbanstitch-cluster
+          service-name: urbanstitch-task-service-tdssialu
+          container-name: urbanstitch-container
+          repo: urbanstitch-ecs
+          context: urbanstitch-context
+          filters:
+            branches:
+              only: staging
+
+      # --- PROD ---
+      - build-and-push-image:
+          name: build-and-push-prod
+          repo: urbanstitch-ecs
+          env: prod
+          context: urbanstitch-context
+          filters:
+            branches:
+              only:
+                - main
+                - prod
+
+      - deploy-service-update:
+          name: deploy-prod
+          requires:
+            - build-and-push-prod
+          cluster-name: urbanstitch-cluster
+          service-name: urbanstitch-task-service-tdssialu
+          container-name: urbanstitch-container
+          repo: urbanstitch-ecs
+          context: urbanstitch-context
+          filters:
+            branches:
+              only:
+                - main
+                - prod
+
+
 
 
 # version: 2.1
