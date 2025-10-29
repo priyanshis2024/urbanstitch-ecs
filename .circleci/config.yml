@@ -61,23 +61,6 @@ jobs:
 
             echo "✅ Successfully pushed: $<<parameters.account-url>>/<<parameters.repo>>:$TAG"
 
-  deploy-to-ecs:
-    executor: aws-ecs/default
-    parameters:
-      cluster-name:
-        type: string
-      service-name:
-        type: string
-      container-name:
-        type: string
-      repo:
-        type: string
-    steps:
-      - aws-ecs/update-service:
-          family: <<parameters.service-name>>
-          cluster-name: <<parameters.cluster-name>>
-          container-image-name-updates: <<parameters.container-name>>=$AWS_ECR_ACCOUNT_URL/<<parameters.repo>>:$IMAGE_TAG
-
 workflows:
   version: 2
   build-and-push:
@@ -91,37 +74,11 @@ workflows:
             branches:
               only: dev
 
-      - deploy-to-ecs:
-          name: deploy-dev
-          cluster-name: urbanstitch-cluster
-          service-name: urbanstitch-task-service-tdssialu
-          container-name: urbanstitch-container
-          repo: urbanstitch-ecs
-          context: urbanstitch-context
-          requires:
-            - build-and-push-dev
-          filters:
-            branches:
-              only: dev
-
       - build-and-push-image:
           name: build-and-push-staging
           repo: urbanstitch-ecs
           env: staging
           context: urbanstitch-context
-          filters:
-            branches:
-              only: staging
-
-      - deploy-to-ecs:
-          name: deploy-staging
-          cluster-name: urbanstitch-cluster
-          service-name: urbanstitch-task-service-tdssialu
-          container-name: urbanstitch-container
-          repo: urbanstitch-ecs
-          context: urbanstitch-context
-          requires:
-            - build-and-push-staging
           filters:
             branches:
               only: staging
@@ -137,17 +94,3 @@ workflows:
                 - main
                 - prod
               
-      - deploy-to-ecs:
-          name: deploy-prod
-          cluster-name: urbanstitch-cluster
-          service-name: urbanstitch-task-service-tdssialu
-          container-name: urbanstitch-container
-          repo: urbanstitch-ecs
-          context: urbanstitch-context
-          requires:
-            - build-and-push-prod
-          filters:
-            branches:
-              only:
-                - main
-                - prod
