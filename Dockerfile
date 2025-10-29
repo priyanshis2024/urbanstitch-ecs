@@ -24,11 +24,7 @@ COPY . .
 EXPOSE 8000
 
 # Command to start your app — modify this if you use Flask or Django
-# Example for FastAPI:
-# CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
-
-# Example for Flask:
-# CMD ["python", "app.py"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
 
 # Default command (update to match your entry point)
 CMD ["python", "main.py"]
