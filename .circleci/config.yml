@@ -84,7 +84,7 @@ workflows:
     jobs:
       - build-and-push-image:
           name: build-and-push-dev
-          # repo: urbanstitch-ecs
+          repo: urbanstitch-ecs
           env: dev
           context: urbanstitch-context
           filters:
