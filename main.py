@@ -3,23 +3,23 @@
 from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from src.api import (
-    user_role,
-    user,
-    user_authenticate,
-    contact_us,
-    customer_details,
-    size,
-    category,
-    subcategory,
-    category_xref,
-    product,
-    subproduct,
-    color,
-    review,
-    wishlist,
-    checkout,
-    order,
-    payment,
+    # user_role,
+    # user,
+    # user_authenticate,
+    # contact_us,
+    # customer_details,
+    # size,
+    # category,
+    # subcategory,
+    # category_xref,
+    # product,
+    # subproduct,
+    # color,
+    # review,
+    # wishlist,
+    # checkout,
+    # order,
+    # payment,
     healthcheck,
     version,
 )
@@ -78,23 +78,23 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(user_role.router)
-app.include_router(user.router)
-app.include_router(user_authenticate.router)
-app.include_router(contact_us.router)
-app.include_router(customer_details.router)
-app.include_router(size.router)
-app.include_router(category.router)
-app.include_router(subcategory.router)
-app.include_router(category_xref.router)
-app.include_router(product.router)
-app.include_router(subproduct.router)
-app.include_router(color.router)
-app.include_router(review.router)
-app.include_router(wishlist.router)
-app.include_router(checkout.router)
-app.include_router(order.router)
-app.include_router(payment.router)
+# app.include_router(user_role.router)
+# app.include_router(user.router)
+# app.include_router(user_authenticate.router)
+# app.include_router(contact_us.router)
+# app.include_router(customer_details.router)
+# app.include_router(size.router)
+# app.include_router(category.router)
+# app.include_router(subcategory.router)
+# app.include_router(category_xref.router)
+# app.include_router(product.router)
+# app.include_router(subproduct.router)
+# app.include_router(color.router)
+# app.include_router(review.router)
+# app.include_router(wishlist.router)
+# app.include_router(checkout.router)
+# app.include_router(order.router)
+# app.include_router(payment.router)
 app.include_router(healthcheck.router)
 app.include_router(version.router)
 
