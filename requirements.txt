@@ -1,0 +1,14 @@
+fastapi[all]
+uvicorn
+sqlalchemy
+psycopg2-binary
+pydantic
+pydantic-settings
+aiosmtplib
+stripe
+python-dotenv        
+starlette
+liquibase
+PyJWT
+pycryptodome
+pycrypto
