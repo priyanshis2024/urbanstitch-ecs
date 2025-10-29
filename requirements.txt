@@ -12,3 +12,4 @@ liquibase
 PyJWT
 pycryptodome
 pycrypto
+asyncpg
