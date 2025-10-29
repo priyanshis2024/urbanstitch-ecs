@@ -93,8 +93,8 @@ workflows:
 
       - deploy-to-ecs:
           name: deploy-dev
-          cluster-name: urbanstitch-cluster-dev
-          service-name: urbanstitch-service-dev
+          cluster-name: urbanstitch-cluster
+          service-name: urbanstitch-task-service-tdssialu
           container-name: urbanstitch-container
           repo: urbanstitch-ecs
           context: urbanstitch-context
@@ -115,8 +115,8 @@ workflows:
 
       - deploy-to-ecs:
           name: deploy-staging
-          cluster-name: urbanstitch-cluster-staging
-          service-name: urbanstitch-service-staging
+          cluster-name: urbanstitch-cluster
+          service-name: urbanstitch-task-service-tdssialu
           container-name: urbanstitch-container
           repo: urbanstitch-ecs
           context: urbanstitch-context
@@ -139,8 +139,8 @@ workflows:
               
       - deploy-to-ecs:
           name: deploy-prod
-          cluster-name: urbanstitch-cluster-prod
-          service-name: urbanstitch-service-prod
+          cluster-name: urbanstitch-cluster
+          service-name: urbanstitch-task-service-tdssialu
           container-name: urbanstitch-container
           repo: urbanstitch-ecs
           context: urbanstitch-context
